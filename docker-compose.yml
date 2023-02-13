@@ -1,0 +1,22 @@
+version: '3'
+services:
+  pfsense:
+    image: pfsense/pfsense
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2222:22"
+    network_mode: "host"
+
+  suricata:
+    image: docker.io/openai/suricata
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - HOME_NET=192.168.1.0/24
+      - EXTERNAL_NET=!$HOME_NET
+    volumes:
+      - ./suricata.yaml:/etc/suricata/suricata.yaml
+      - ./rules:/etc/suricata/rules
+      - ./logs:/var/log/suricata
